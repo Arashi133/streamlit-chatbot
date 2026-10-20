@@ -11,7 +11,7 @@ A Streamlit chatbot application powered by **Google Gemini** models and **Supaba
 * **Smart Agent Persona**: Uses Gemini system instructions to ensure the bot asks clarifying questions when prompts are vague, avoiding unnecessary interrogation.
 * **Thinking Process Support**: Captures and renders internal reasoning/thought blocks using Streamlit expanders.
 * **Automated AI Evaluation**: Grades each chatbot turn on truthfulness, accuracy, and helpfulness using a judge model.
-* **Session & Name Management**: Seamlessly remembers user identity across page refreshes via URL parameters (`?name=...`).
+* **Session & Name Management**: Seamlessly remembers user identity across page refreshes via URL parameters.
 
 ---
 
