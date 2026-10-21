@@ -3,9 +3,9 @@ import uuid
 
 import streamlit as st
 
-from . import config
-from .database import list_conversations, load_messages, normalize_name, save_message
-from .llm import generate_greeting
+import config
+from database import list_conversations, load_messages, normalize_name, save_message
+from llm import generate_greeting
 
 
 def current_user_key() -> str:
