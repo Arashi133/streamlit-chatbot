@@ -10,9 +10,9 @@ A Streamlit chatbot application powered by **Google Gemini** models and **Supaba
 * **Persistent Chat History**: Automatically saves conversations to Supabase, isolating chats per user using a normalized identifier.
 * **Smart Agent Persona**: Uses Gemini system instructions to ensure the bot asks clarifying questions when prompts are vague, avoiding unnecessary interrogation.
 * **Thinking Process Support**: Captures and renders internal reasoning/thought blocks using Streamlit expanders.
-* **Automated AI Evaluation**: Grades each chatbot turn on truthfulness, accuracy, and helpfulness using a judge model.
 * **Session & Name Management**: Seamlessly remembers user identity across page refreshes via URL parameters.
-
+* **LLM-as-a-judge scoring**: every reply is scored 0-10 with a short explanation, using DeepEval with Gemini as the judge.
+* **Thought summaries**: Gemini's reasoning summary is shown in a "Thought Process" expander.
 ---
 
 ## Project Structure
