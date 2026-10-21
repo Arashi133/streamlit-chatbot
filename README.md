@@ -22,10 +22,13 @@ main/
 │
 ├── .env                    # Environment variables & API keys
 ├── requirements.txt        # Python packages
-├── app.py                  # Main entry point (Streamlit UI, flow, and event handlers)
-├── config.py               # Client initializations (Supabase & Gemini) and model configs
-├── database.py             # Supabase data access layer (saving and loading messages)
-└── agent.py                # Gemini integration (prompts, greetings, content conversion, evaluation)
+├── app.py                  # Entry point: wires the modules together
+├── config.py               # Settings; reads st.secrets, falls back to .env
+├── prompts.py              # Agent, greeting and judge-criteria prompts
+├── llm.py                  # Gemini client, retries, greeting + reply generation
+├── evaluation.py           # DeepEval judge (GeminiJudge, score_chatbot_response)
+├── database.py             # Supabase reads/writes, scoped by user
+└── ui.py                   # Name screen, sidebar, message list, session state
 ```
 
 ## Prerequisites
