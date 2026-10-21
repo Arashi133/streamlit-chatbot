@@ -1,16 +1,20 @@
-import streamlit as st
-from config import supabase
+from supabase import Client, create_client
 
-def current_user_key() -> str:
-    """Normalized name used to separate each user's conversations in Supabase."""
-    return " ".join(st.session_state.user_name.split()).casefold()
+from . import config
+
+supabase: Client = create_client(config.SUPABASE_URL, config.SUPABASE_SECRET_KEY)
+TABLE = config.MESSAGES_TABLE
 
 
-def save_message(role: str, content: str, **extra):
-    """Insert one message row into Supabase, tagged with the current user."""
+def normalize_name(name: str) -> str:
+    """'Anna', 'anna' and ' ANNA ' all map to the same key."""
+    return " ".join(name.split()).casefold()
+
+
+def save_message(conversation_id: str, user_key: str, role: str, content: str, **extra) -> None:
     row = {
-        "conversation_id": st.session_state.conversation_id,
-        "user_key": current_user_key(),
+        "conversation_id": conversation_id,
+        "user_key": user_key,
         "role": role,
         "content": content,
         "model": None,
@@ -21,46 +25,40 @@ def save_message(role: str, content: str, **extra):
         "total_tokens": 0,
     }
     row.update(extra)
-    supabase.table("conversation_messages").insert(row).execute()
+    supabase.table(TABLE).insert(row).execute()
 
 
-def load_conversation_messages(conversation_id: str):
-    """Fetch messages for a specific conversation and user."""
-    try:
-        msg_res = (
-            supabase.table("conversation_messages")
-            .select("role, content, reasoning, score")
-            .eq("conversation_id", conversation_id)
-            .eq("user_key", current_user_key())
-            .order("created_at", desc=False)
-            .order("id", desc=False)
-            .execute()
-        )
-        return msg_res.data or []
-    except Exception as e:
-        print(f"Load error: {e}")
-        return []
+def load_messages(conversation_id: str, user_key: str) -> list:
+    res = (
+        supabase.table(TABLE)
+        .select("role, content, reasoning, score, score_reason")
+        .eq("conversation_id", conversation_id)
+        .eq("user_key", user_key)
+        .order("created_at", desc=False)
+        .order("id", desc=False)
+        .execute()
+    )
+    return res.data or []
 
 
-def fetch_user_conversations():
-    """Fetch all unique conversations and their titles for the sidebar history."""
-    try:
-        response = (
-            supabase.table("conversation_messages")
-            .select("conversation_id, role, content, created_at")
-            .eq("user_key", current_user_key())
-            .order("created_at", desc=True)
-            .execute()
-        )
+def list_conversations(user_key: str) -> list:
+    """Return [(conversation_id, title)], most recently active first.
 
-        conversations = {}
-        for row in response.data or []:
-            cid = row["conversation_id"]
-            conversations.setdefault(cid, None)
-            if row["role"] == "user":
-                text = row["content"]
-                conversations[cid] = text[:25] + "..." if len(text) > 25 else text
-        return conversations
-    except Exception as e:
-        print(f"History error: {e}")
-        return {}
+    The title is the earliest USER message. Chats that only contain the greeting are skipped.
+    """
+    res = (
+        supabase.table(TABLE)
+        .select("conversation_id, role, content, created_at")
+        .eq("user_key", user_key)
+        .order("created_at", desc=True)
+        .limit(1000)
+        .execute()
+    )
+    titles = {}
+    for row in res.data or []:
+        cid = row["conversation_id"]
+        titles.setdefault(cid, None)  # newest-first, so dict order = latest activity
+        if row["role"] == "user":
+            text = row["content"]  # walking back in time, so the earliest one wins
+            titles[cid] = text[:25] + "..." if len(text) > 25 else text
+    return [(cid, title) for cid, title in titles.items() if title is not None]
