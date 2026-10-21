@@ -7,8 +7,8 @@ from typing import Optional
 from google import genai
 from google.genai import errors, types
 
-from . import config
-from .prompts import GREETING_SYSTEM_PROMPT, build_agent_prompt, fallback_greeting
+import config
+from prompts import GREETING_SYSTEM_PROMPT, build_agent_prompt, fallback_greeting
 
 gemini = genai.Client(api_key=config.GEMINI_API_KEY)
 
