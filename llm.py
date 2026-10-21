@@ -1,4 +1,3 @@
-"""Gemini client: retries, conversation conversion, greeting and chat replies."""
 import asyncio
 import time
 from dataclasses import dataclass
