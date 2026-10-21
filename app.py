@@ -1,5 +1,5 @@
 import streamlit as st
-from chatbot import database, evaluation, llm, ui
+import database, evaluation, llm, ui
 
 ui.init_session()
 ui.require_user_name()          # shows the name form and stops until a name is entered
