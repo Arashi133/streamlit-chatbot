@@ -1,6 +1,6 @@
 from supabase import Client, create_client
 
-from . import config
+import config
 
 supabase: Client = create_client(config.SUPABASE_URL, config.SUPABASE_SECRET_KEY)
 TABLE = config.MESSAGES_TABLE
