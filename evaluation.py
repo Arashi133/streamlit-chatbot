@@ -11,9 +11,9 @@ try:
 except ImportError:
     from deepeval.test_case import LLMTestCaseParams as EvalParams   # DeepEval 3.x
 
-from . import config
-from .llm import a_gemini_generate, gemini, gemini_generate
-from .prompts import QUALITY_CRITERIA
+import config
+from llm import a_gemini_generate, gemini, gemini_generate
+from prompts import QUALITY_CRITERIA
 
 
 class GeminiJudge(DeepEvalBaseLLM):
