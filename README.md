@@ -52,6 +52,7 @@ In the Supabase project, create a table named `conversation_messages` with the f
 * `completion_tokens` (Integer, default 0)
 * `total_tokens` (Integer, default 0)
 * `score` (Integer, nullable)
+* `score_reason` (Text, nullable)
 * `created_at` (Timestamp with time zone, default now())
 
 ---
